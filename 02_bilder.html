@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Vulkanismus bei Rotorua</title>
+	
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+	
+    <style>
+        figure img {
+            width: 600px;
+        }
+        .current {
+            font-weight: bold;
+        }
+		#overviewMap {
+		  float: right;
+		  width: 400px;
+		  height: 300px;
+		  border: 1px solid blue;
+		}
+    </style>
+</head>
+
+<body>
+<h1>Wai-O-Tapu &amp; Waimangu</h1>
+<nav id="figureSelector">
+    <input type="button" value="Bild 1" data-image="p1130147.jpg" data-title="Lady Knox Geysir (Wai-O-Tapu Thermal Wonderland)" data-lat="-38.3507624" data-lng="176.3747501" class="current"/>
+    <input type="button" value="Bild 2" data-image="p1130159.jpg" data-title="Mud pools (Wai-O-Tapu Thermal Wonderland)" data-lat="-38.3418402" data-lng="176.36853" />
+    <input type="button" value="Bild 3" data-image="p1130224.jpg" data-title="Artist's Palette (Wai-O-Tapu Thermal Wonderland)" data-lat="-38.3585554" data-lng="176.3690313" />
+    <input type="button" value="Bild 4" data-image="p1130229.jpg" data-title="Champagne Pool (Wai-O-Tapu Thermal Wonderland)" data-lat="-38.3591133" data-lng="176.3668503" />
+    <input type="button" value="Bild 5" data-image="p1130256.jpg" data-title="Frying Pan Lake (Waimangu Volcanic Valley)" data-lat="-38.2835879" data-lng="176.3940843" />
+    <input type="button" value="Bild 6" data-image="p1130279.jpg" data-title="Inferno Crater Lake (Waimangu Volcanic Valley)" data-lat="-38.28205653" data-lng="176.397539" />
+    <input type="button" value="Bild 7" data-image="p1130274.jpg" data-title="Birds Nest Terrace (Waimangu Volcanic Valley)" data-lat="-38.2831233" data-lng="176.3993706" />
+    <input type="button" value="Bild 8" data-image="p1130307.jpg" data-title="War Brick Terrace (Waimangu Volcanic Valley)" data-lat="-38.2781013" data-lng="176.4088264" />
+</nav>
+
+<div id="overviewMap"></div>
+<figure>
+    <img id="figureImage" src="images/p1130147.jpg" alt="Lady Knox Geysir (Wai-O-Tapu Thermal Wonderland)" />
+    <figcaption id="figureCaption">Lady Knox Geysir (Wai-O-Tapu Thermal Wonderland)</figcaption>
+</figure>
+<p> Sie haben <span id="imgCounter"> 0 </span> Picturelen angeclickt :))) </p>
+
+<script>
+    // L. steht für Leaflet
+    var map = L.map("overviewMap");
+    // map.setView([lat, lng], zoomlevel);
+	map.setView([-38.3507624, 176.3747501], 9);
+	
+	var osm = L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png");
+	osm.addTo(map);
+	
+	var marker = L.marker([-38.3507624, 176.3747501]);
+	marker.addTo(map);
+
+    // img-Element des angezeigten Bildes finden
+    var bild = document.getElementById("figureImage");
+
+    // figcaption-Element der Bildunterschrift finden
+    var unterschrift = document.getElementById("figureCaption");
+
+    // input-Element des ersten Buttons finden
+    var letzterButton = document.getElementById("button1");
+
+    // hole alle input-Elemente
+	var alleButtons = document.getElementsByTagName("input");
+	console.log(alleButtons);
+	
+	// nav-Element mit allen Buttons finden
+    var navigation = document.getElementById("figureSelector");
+	
+	// Zaehler Variable für Bilder
+	var bilderKlicks = 0;
+	var clickParagraph = document.getElementById("imgCounter");
+	
+	var bilderWechsel = function(button) {
+	  console.log("Bilderwechsel!");
+	  var bildname = button.getAttribute("data-image");
+	  var bildtitel = button.getAttribute("data-title");
+	  var lat = button.getAttribute("data-lat");
+	  var lng = button.getAttribute("data-lng");
+	  console.log(lat, lng);
+	  
+	  marker.setLatLng([lat, lng]);
+	  map.panTo(marker.getLatLng());
+	  // map.panTo([lat, lng]); würde auch klappen
+	  
+	  //console.log(bildname, bildtitel);
+	  bild.src = "images/" + bildname;
+	  unterschrift.innerHTML = bildtitel;
+	  button.setAttribute("class", "current");
+	  
+	  // overviewMap anpassen
+	};
+
+    // beim Klick auf eine Button das passende Bild mit Unterschrift anzeigen
+    navigation.onclick = function (evt) {
+		if (evt.target.nodeName === "NAV") {
+		  return;
+		}
+
+	// Vorschleife mit for, um auf der Website nur den angeclickten Button "fett" zu sehen
+	// -> Schleife ueber alle Buttons und class Attribut entfernen
+	for (var i=0; i<alleButtons.length; i++) {
+		console.log("Button", i);
+		alleButtons[i].removeAttribute("class");
+	}
+		
+	bilderWechsel(evt.target);
+
+	// Befehl, dass die Anzahl der Bilderklicks in der Konsole gezeigt werden
+	// umständliche variante waere: bilderKlicks = bilderKlicks + 1;
+	bilderKlicks++;
+	console.log("Bilder angeklickst: ", bilderKlicks);
+	clickParagraph.innerHTML = bilderKlicks;
+
+
+    };
+</script>
+
+</body>
+</html>
