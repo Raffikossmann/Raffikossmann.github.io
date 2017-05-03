@@ -176,7 +176,7 @@ map.on('locationerror', onLocationError);
 			onEachFeature: function (feature, layer) {
 			var note = '<h3>' + layer.feature.properties.STATION + '</h3>';
             note +=  '<h4>' + layer.feature.properties.BEZIRK + "er Bezirk" + '</h4>';
-			layer.bindPopup(note)
+			layer.bindTooltip(note)
 			}
 		
         }).bindPopup(function(layer) {
