@@ -15,7 +15,17 @@
     <script src="citybike_punkte.json.js"></script>
     <script src="wanderwege_linien.json.js"></script>
 	<script src="wiener_maerkte.json.js"></script>
-    <!-- DONE: GeoJSON Datenskript für Märkte/Flächen einbinden - https://www.data.gv.at/suche/?search-term=wien+m%C3%A4rkte&searchIn=catalog -->
+	<script src="my_geojson.js"></script>
+	*/ leaflethash*/
+    <script src="leaflet-hash.js"></script>
+	*/markercluster*/
+    <script src="leaflet.markercluster.js"></script>
+	<link rel="stylesheet" href="MarkerCluster.css" />
+	<link rel="stylesheet" href="MarkerCluster.Default.css" />
+	*/routuing*/
+	<link rel="stylesheet" href="leaflet-routing-machine.css" />
+	<script src="leaflet-routing-machine.js"></script>
+	
 
     <style>
 	     body {
@@ -35,7 +45,8 @@
             height: 600px;
             border: 1px solid black;
             margin: auto;
-        }*/
+        }*
+		/
     </style>
 </head>
 
@@ -52,7 +63,7 @@
 
     <script>
         // WMTS-Layer definieren - Quelle: http://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml
-        // DONE: WMTS-Layer Wien, Luftbild 1956 hinzufügen - Quelle: http://maps.wien.gv.at/wmts/1.0.0/WMTSCapabilities.xml (nach lb1956 suchen und dann wie bei basemap.at die ResourceURL anpassen, Datenquelle: Stadt Wien – data.wien.gv.at)
+
         var layers = {
             geolandbasemap: L.tileLayer("https://{s}.wien.gv.at/basemap/geolandbasemap/normal/google3857/{z}/{y}/{x}.png", {
                 subdomains: ['maps', 'maps1', 'maps2', 'maps3', 'maps4'],
@@ -87,8 +98,14 @@
         // Karte definieren und Ausschnitt setzen
         var map = L.map('wienMap', {
             layers: [layers.bmapgrau],
+			center: [48.20833, 16.373064],
+            zoom: 12
         });
-        map.locate({setView: true, maxZoom: 16});
+		
+		var marker = L.markerClusterGroup();
+		
+		
+        //map.locate({setView: true, maxZoom: 16});
 		function onLocationFound(e) {
         var radius = e.accuracy / 10;
 
@@ -109,7 +126,7 @@ map.on('locationerror', onLocationError);
             maxWidth: 200,
             metric: true,
             imperial: false
-        }).addTo(map);
+        });//.addTo(map);
 
         // GeoJSON Daten des Stadtspaziergangs laden und farbige Marker nach Kategorie mit Popup erstellen
         var iconByCategory = {
@@ -132,10 +149,8 @@ map.on('locationerror', onLocationError);
                         iconUrl: iconByCategory[feature.properties.KATEGORIE]
                     })
                 });
-            }
+            },	
         }).bindPopup(function(layer) {
-            // DONE: HTML-Popupfenster mit BEMERKUNG, OBJECTID, KATEGORIE, ADRESSE, WEITERE_INF (als Link)
-
             var note = '<h3>' + layer.feature.properties.NAME + '</h3>';
 			note +=  '<h4>' + layer.feature.properties.BEMERKUNG + '</h4>';
 			note +=  '<h5>' + "Object ID: " + layer.feature.properties.OBJECTID + '</h5>';
@@ -143,11 +158,11 @@ map.on('locationerror', onLocationError);
 			note +=  '<h5>' + "Adresse: " + layer.feature.properties.ADRESSE + '</h5>';
             note += '<a href="' + layer.feature.properties.WEITERE_INF + '">Infos</a>';
             return note;			
-        }).addTo(map);
+        });//.addTo(map);
 
         // GeoJSON Daten der Citybike Stationen laden und Popup erstellen
         var punkteCitybike = L.geoJSON(window.citybikePunkte, {
-            // DONE: Citybike Marker als Icons implementieren (https://www.data.gv.at/katalog/dataset/770f9237-9a7f-45e4-9647-aacf35ddee06)
+
             pointToLayer: function(feature, latlng) {
                 return L.marker(latlng, {
                     icon: L.icon({
@@ -157,15 +172,21 @@ map.on('locationerror', onLocationError);
                         iconUrl: 'http://www.data.wien.gv.at/icons/citybike.png'
                     })
                 });
+			},
+			onEachFeature: function (feature, layer) {
+			var note = '<h3>' + layer.feature.properties.STATION + '</h3>';
+            note +=  '<h4>' + layer.feature.properties.BEZIRK + "er Bezirk" + '</h4>';
+			layer.bindPopup(note)
 			}
+		
         }).bindPopup(function(layer) {
             // DONE: HTML-Popupfenster mit STATION und BEZIRK
             var note = '<h3>' + layer.feature.properties.STATION + '</h3>';
             note +=  '<h4>' + layer.feature.properties.BEZIRK + "er Bezirk" + '</h4>';
 			return note;
-        }).addTo(map);
+        }).addTo(marker);
+		map.addLayer(marker);
 
-        // GeoJSON Daten der Wanderwege laden, nach Typ einfärben und Popup erstellen
         var linienWanderwege = L.geoJSON(window.wanderwegeLinien, {
             style: function(feature) {
                 var farbe = "";
@@ -182,9 +203,8 @@ map.on('locationerror', onLocationError);
             var tipp = '<h3>' + layer.feature.properties.BEZ_TEXT + '</h3>';
             tipp += '<a href="' + layer.feature.properties.URL_INFO + '">Infos</a>';
             return tipp;
-        }).addTo(map);
+        });//.addTo(map);
 
-        // DONE: GeoJSON Daten der Märkte hinzufügen - https://www.data.gv.at/suche/?search-term=wien+m%C3%A4rkte&searchIn=catalog
         var flaechenMaerkte = L.geoJSON(window.wiener_maerkte, {
             style: function(feature) {
                 var farbe = "";
@@ -203,13 +223,8 @@ map.on('locationerror', onLocationError);
 			note +=  '<h4>' + layer.feature.properties.INFOS_NACHHALTIG+ '</h4>';
             note += '<a href="' + layer.feature.properties.URL_MARKTAMT+ '">Infos</a>';
             return note;
-        }).addTo(map);
-        // DONE: Flächen nach property INFOS_NACHHALTIG einfärben
-        // DONE: HTML-Popupfenster mit NAME, MARKTKATEGORIE, INFOS_NACHHALTIG, URL_MARKTAMT (als Link)
+        });//.addTo(map);
 
-        // WMTS-Layer Auswahl und Marker Auswahl Overlay hinzufügen
-        // DONE: WMTS-Layer Wien, Luftbild 1956 zur Hintergrundlayerauswahl hinzufügen
-        // DONE: GeoJSON Layer Märkte ein/aus Overlay hinzufügen
         L.control.layers({
             "basemap.at - STANDARD": layers.geolandbasemap,
             "basemap.at - GRAU": layers.bmapgrau,
@@ -224,9 +239,18 @@ map.on('locationerror', onLocationError);
             "Wandern in und um Wien": linienWanderwege,
 			"Wiener Maerkte": flaechenMaerkte
         }).addTo(map)
+        L.geoJSON(window.my_geojson).addTo(map);
+		//return layer.feature.properties.color; ??
+		var hash = new L.Hash(map);
+		
+		L.Routing.control({
+        waypoints: [
+         L.latLng(47.26320, 11.39488),
+         L.latLng(48.227, 16.35150)
+         ]
+        }).addTo(map);
 
-        // Ausschnitt setzen
-        // DONE?: Ausschnitt auf Stationen des Stadtpaziergangs setzen??
+
 		
     </script>
 
