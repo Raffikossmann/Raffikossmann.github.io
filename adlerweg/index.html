@@ -82,7 +82,20 @@
 
         // leaflet-hash aktivieren
         var hash = new L.Hash(map);
+		//Etappe laden
 		L.geoJSON(window.etappe11).addTo(map);
+		var huts = [
+		         L.marker([47.42724, 11.42161], {title: "Karwendelhaus", icon: L.icon ({iconUrl: 'icons/huette.png' }) }), //Karwendelhaus 47.42724, 11.42161
+				 L.marker([47.36953, 11.43490], {title: "Kastenalm ",icon: L.icon ({iconUrl: 'icons/huette.png' }) }), //Kastenalm  47.36953, 11.43490
+				 L.marker([47.35477, 11.47718], {title: "Hallerangerhaus",icon: L.icon ({iconUrl: 'icons/huette.png' }) }), //Hallerangerhaus 47.35477, 11.47718
+				 L.marker([47.35647, 11.47980], {title: "Hallerangeralm",icon: L.icon ({iconUrl: 'icons/huette.png' }) })  //Hallerangeralm 47.35647, 11.47980
+		];
+		var hutsLayer = L.featureGroup();
+		for (var i=0; i<huts.length; i++) {
+		     hutsLayer.addLayer(huts[i]);
+		}
+		hutsLayer.addTo(map);
+		
 
     </script>
 
