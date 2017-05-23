@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 
@@ -6,40 +5,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-    <title>Adlerweg-Etappe 11: Karwendelhaus – Hallerangerhaus </title>
+    <title>basemap.at mit leaflet-hash Plugin</title>
 
-    <link rel="stylesheet" href="js/leaflet/leaflet.css" />
-	<link rel="stylesheet" href="js/leaflet-elevation/leaflet.elevation-0.0.4.css" />
-	
+	<link rel="stylesheet" href="js/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="js/leaflet-elevation/leaflet.elevation-0.0.4.css" />
     <script src="js/leaflet/leaflet.js"></script>
-	<script src="js/leaflet-omnivore/leaflet-omnivore.js"></script>
+    <script src="js/leaflet-hash/leaflet-hash.js"></script>
+	<script src="data/adlerwegetappe11.js"></script>
 	<script src="js/leaflet-elevation/leaflet.elevation-0.0.4.min.js"></script>
 	<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-
+	<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
+	
     <style>
         body {
             padding: 0px;
             margin: 0px;
         }
-        html, body, {
-            height: 100vh;
-            width: 100vw;
+        html, body, #map {
+            height: 600px;
+            width: 1024px;
         }
-		#map {
-			float: center;
-			height: 600px;
-			width: 1024px;
-			border: 1px solid black;
-		}
     </style>
 </head>
 
 <body>
-	<h1> Adlerweg-Etappe 11: Karwendelhaus – Hallerangerhaus</h1>
+
+    <h1>Adlerweg-Etappe 11: Karwendelhaus – Hallerangerhaus</h1>
 	<p>Hinauf in höchste Höhen führt die alpinistisch anspruchsvollste Adlerweg-Etappe im Karwendel. Neben dem Karwendelhaus startet die Route und führt auf die 2.749 Meter hohe Birkkarspitze. Nach dem Gipfelsieg erfolgt der Abstieg ins schöne Hinterautal und weiter bis zum Etappenziel, dem Hallangerhaus.</p>
-    <div id="map"></div>
+	<div id="map"></div>
 
     <script>
+        // WMTS-Layer basemap.at - Quelle: http://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml
         var layers = {
             geolandbasemap: L.tileLayer("https://{s}.wien.gv.at/basemap/geolandbasemap/normal/google3857/{z}/{y}/{x}.png", {
                 subdomains: ['maps', 'maps1', 'maps2', 'maps3', 'maps4'],
@@ -81,42 +77,6 @@
             imperial: false
         }).addTo(map);
 
-        // Höhenprofil control hinzufügen
-        var profileControl = L.control.elevation({
-            position : 'bottomleft',
-            theme : 'steelblue-theme'
-        });
-        profileControl.addTo(map);
-
-        // GPX Track laden
-        gpxTrack = omnivore.gpx('Data/AdlerwegEtappe11.gpx').addTo(map);
-
-        // nach erfolgreichem Laden Popup hinzufügen, Ausschnitt setzen und Höhenprofil erzeugen
-        gpxTrack.on('ready', function () {
-            // Popup hinzufügen
-            var markup = '<h3> Adlerweg-Etappe 11: Karwendelhaus – Hallerangerhaus</h3>';
-            markup += '<p>Hinauf in höchste Höhen führt die alpinistisch anspruchsvollste Adlerweg-Etappe im Karwendel. Neben dem Karwendelhaus startet die Route und führt auf die 2.749 Meter hohe Birkkarspitze. Nach dem Gipfelsieg erfolgt der Abstieg ins schöne Hinterautal und weiter bis zum Etappenziel, dem Hallangerhaus.</p>'
-            markup += '<li>Ausgangspunkt: Karwendelhaus</li>';
-            markup += '<li>Endpunkt: Hallerangerhaus</li>';
-            markup += '<li>Höhenmeter bergauf:1440</li>';
-            markup += '<li>Höhenmeter bergab: 1450</li>';
-            markup += '<li>Höchster Punkt: 2749</li>';
-            markup += '<li>Schwierigkeitsgrad: schwierig</li>';
-            markup += '<li>Streckenlänge (in km): 14</li>';
-            markup += '<li>Gehzeit (in Stunden): 8</li>';
-            markup += '<li>Einkehrmöglichkeiten: Karwendelhaus, Kastenalm, Hallerangerhaus, Hallerangeralm</li>';
-            markup += '<li><a href="http://www.tirol.at/reisefuehrer/sport/wandern/wandertouren/a-adlerweg-etappe-11-karwendelhaus-hallerangerhaus">Weitere Informationen</a></li>';
-            gpxTrack.bindPopup(markup, { maxWidth : 450 });
-
-            // Ausschnitt setzen
-            map.fitBounds(gpxTrack.getBounds());
-
-            // Höhenprofil erzeugen
-            gpxTrack.eachLayer(function(layer) {
-                profileControl.addData(layer.feature);
-            });
-        });
-
         // WMTS-Layer Auswahl hinzufügen
         var layerControl = L.control.layers({
             "basemap.at - STANDARD": layers.geolandbasemap,
@@ -125,27 +85,37 @@
             "basemap.at - HIGH-DPI": layers.bmaphidpi,
             "basemap.at - ORTHOFOTO": layers.bmaporthofoto30cm,
             "OpenStreetMap": layers.osm,
-        },{
-            "Adlerweg Etappe 11" : gpxTrack
         }).addTo(map);
+
+        // leaflet-hash aktivieren
+        var hash = new L.Hash(map);
+		//Etappe laden
+		L.geoJSON(window.etappe11).addTo(map);
+		
+		var el = L.control.elevation();
+		       el.addTo(map);
+			   L.geoJSON(window.etappe11, {
+			   onEachFeature: el.addData.bind(el)
+			   }).addTo(map);
 		
 		var huts = [
-L.marker([47.42724, 11.42161], {title: "Karwendelhaus", icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/huette.png' }) }), //Karwendelhaus 47.42724, 11.42161;; 
+		         L.marker([47.42724, 11.42161], {title: "Karwendelhaus", icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/huette.png' }) }), //Karwendelhaus 47.42724, 11.42161;; 
 				 L.marker([47.36953, 11.43490], {title: "Kastenalm ",icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/huette.png' }) }), //Kastenalm  47.36953, 11.43490
 				 L.marker([47.35477, 11.47718], {title: "Hallerangerhaus",icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/huette.png' }) }), //Hallerangerhaus 47.35477, 11.47718
 				 L.marker([47.35647, 11.47980], {title: "Hallerangeralm",icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/huette.png' }) })  //Hallerangeralm 47.35647, 11.47980
-			];
-		var hutsLayer = L.featureGroup(); 
+		];
+		var hutsLayer = L.featureGroup();
 		for (var i=0; i<huts.length; i++) {
-			hutsLayer.addLayer(huts[i]);
+		     hutsLayer.addLayer(huts[i]);
 		}
-		// hutsLayer.addTo(map);
+		//hutsLayer.addTo(map);
 		map.on("zoomend", function () {
-			if (map.getZoom() >= 15) { 
-				map.addLayer(hutsLayer);
-			} else { 
-				map.removeLayer(hutsLayer); 
-			}
+		       if (map.getZoom () >= 15) {
+			         map.addLayer(hutsLayer);
+			   }
+			   else {
+			        map.removeLayer(hutsLayer);
+				}
 		});
 		var start = [
 		         L.marker([47.42738, 11.42165], {title: "Startpunkt der Etappe", icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/start.png' }) })
@@ -156,7 +126,7 @@ L.marker([47.42724, 11.42161], {title: "Karwendelhaus", icon: L.icon ({iconAncho
 		}
 		//startLayer.addTo(map);
 		map.on("zoomend", function () {
-		       if (map.getZoom () >= 10) {
+		       if (map.getZoom () >= 13) {
 			         map.addLayer(startLayer);
 			   }
 			   else {
@@ -172,18 +142,19 @@ L.marker([47.42724, 11.42161], {title: "Karwendelhaus", icon: L.icon ({iconAncho
 		}
 		//endLayer.addTo(map);
 		map.on("zoomend", function () {
-		       if (map.getZoom () >= 10) {
+		       if (map.getZoom () >= 13) {
 			         map.addLayer(endLayer);
 			   }
 			   else {
 			        map.removeLayer(endLayer);
 				}
 		});
+		
+		
+
     </script>
-	
 <p><a href="http://www.tirol.at/reisefuehrer/sport/wandern/wandertouren/a-adlerweg-etappe-11-karwendelhaus-hallerangerhaus">Offizieller Link zur 11. Etappe des Adlerwegs</a></p>
 <p><a href="https://github.com/Raffikossmann/raffikossmann.github.io">Autor: Raffael Kossmann</a></p>
-
 </body>
 
 </html>
