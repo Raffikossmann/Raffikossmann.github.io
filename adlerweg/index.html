@@ -20,7 +20,13 @@
         body {
             padding: 0px;
             margin: 0px;
+			text-align: center;
         }
+		h1 {
+		    color: white;
+			background-color: black;
+			text-align: center;
+		}
         html, body, {
             height: 100vh;
             width: 100vw;
@@ -148,7 +154,7 @@ L.marker([47.42724, 11.42161], {title: "Karwendelhaus", icon: L.icon ({iconAncho
 			}
 		});
 		var start = [
-		         L.marker([47.42738, 11.42165], {title: "Startpunkt der Etappe", icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/start.png' }) })
+		         L.marker([47.42728, 11.42170], {title: "Startpunkt der Etappe", icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/start.png' }) })
 		];
 		var startLayer = L.featureGroup();
 		for (var i=0; i<start.length; i++) {
