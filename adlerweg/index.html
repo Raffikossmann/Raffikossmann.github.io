@@ -49,6 +49,41 @@
 	<h1> Adlerweg-Etappe 11: Karwendelhaus – Hallerangerhaus</h1>
 	<p>Hinauf in höchste Höhen führt die alpinistisch anspruchsvollste Adlerweg-Etappe im Karwendel. Neben dem Karwendelhaus startet die Route und führt auf die 2.749 Meter hohe Birkkarspitze. Nach dem Gipfelsieg erfolgt der Abstieg ins schöne Hinterautal und weiter bis zum Etappenziel, dem Hallangerhaus.</p>
     <div id="map"></div>
+	<select id="etappen">
+	    <option value="AdlerwegEtappe01.gpx"> Adlerweg Etappe 01</option>
+		<option value="AdlerwegEtappe02.gpx"> Adlerweg Etappe 02</option>
+		<option value="AdlerwegEtappe03.gpx"> Adlerweg Etappe 03</option>
+		<option value="AdlerwegEtappe04.gpx"> Adlerweg Etappe 04</option>
+		<option value="AdlerwegEtappe05.gpx"> Adlerweg Etappe 05</option>
+		<option value="AdlerwegEtappe06.gpx"> Adlerweg Etappe 06</option>
+		<option value="AdlerwegEtappe07.gpx"> Adlerweg Etappe 07</option>
+		<option value="AdlerwegEtappe08.gpx"> Adlerweg Etappe 08</option>
+		<option value="AdlerwegEtappe09.gpx"> Adlerweg Etappe 09</option>
+		<option value="AdlerwegEtappe10.gpx"> Adlerweg Etappe 10</option>
+		<option value="AdlerwegEtappe11.gpx" selected> Adlerweg Etappe 11</option>
+		<option value="AdlerwegEtappe12.gpx"> Adlerweg Etappe 12</option>
+		<option value="AdlerwegEtappe13.gpx"> Adlerweg Etappe 13</option>
+		<option value="AdlerwegEtappe14.gpx"> Adlerweg Etappe 14</option>
+		<option value="AdlerwegEtappe15.gpx"> Adlerweg Etappe 15</option>
+		<option value="AdlerwegEtappe16.gpx"> Adlerweg Etappe 16</option>
+		<option value="AdlerwegEtappe17.gpx"> Adlerweg Etappe 17</option>
+		<option value="AdlerwegEtappe18.gpx"> Adlerweg Etappe 18</option>
+		<option value="AdlerwegEtappe19.gpx"> Adlerweg Etappe 19</option>
+		<option value="AdlerwegEtappe20.gpx"> Adlerweg Etappe 20</option>
+		<option value="AdlerwegEtappe21.gpx"> Adlerweg Etappe 21</option>
+		<option value="AdlerwegEtappe22.gpx"> Adlerweg Etappe 22</option>
+		<option value="AdlerwegEtappe23.gpx"> Adlerweg Etappe 23</option>
+		<option value="AdlerwegEtappe24.gpx"> Adlerweg Etappe 24</option>
+		<option value="AdlerwegEtappeO1.gpx"> Adlerweg Etappe O1</option>
+		<option value="AdlerwegEtappeO2.gpx"> Adlerweg Etappe O2</option>
+		<option value="AdlerwegEtappeO3.gpx"> Adlerweg Etappe O3</option>
+		<option value="AdlerwegEtappeO4.gpx"> Adlerweg Etappe O4</option>
+		<option value="AdlerwegEtappeO5.gpx"> Adlerweg Etappe O5</option>
+		<option value="AdlerwegEtappeO6.gpx"> Adlerweg Etappe O6</option>
+		<option value="AdlerwegEtappeO7.gpx"> Adlerweg Etappe O7</option>
+		<option value="AdlerwegEtappeO8.gpx"> Adlerweg Etappe O8</option>
+		<option value="AdlerwegEtappeO9.gpx"> Adlerweg Etappe O9</option>
+	</select>
 
     <script>
         var layers = {
@@ -98,9 +133,11 @@
             theme : 'steelblue-theme'
         });
         profileControl.addTo(map);
-
+		
+		
+        function loadTrack(track) {
         // GPX Track laden
-        gpxTrack = omnivore.gpx('data/AdlerwegEtappe11.gpx').addTo(map);
+        gpxTrack = omnivore.gpx('data/'+track).addTo(map);
 
         // nach erfolgreichem Laden Popup hinzufügen, Ausschnitt setzen und Höhenprofil erzeugen
         gpxTrack.on('ready', function () {
@@ -123,11 +160,12 @@
             map.fitBounds(gpxTrack.getBounds());
 
             // Höhenprofil erzeugen
+			profileControl.clear();
             gpxTrack.eachLayer(function(layer) {
                 profileControl.addData(layer.feature);
 				
 				//var pts
-				console.log(layer.feature.geometry.coordinates)
+				//console.log(layer.feature.geometry.coordinates)
 				var pts = layer.feature.geometry.coordinates;
 				
 				for (var i = 1; i < pts.length; i += 1) {
@@ -142,22 +180,53 @@
 					//console.log(dist);
 					
 					var delta = pts[i][2] - pts[i-1][2];
-					console.log(delta,"Höhenmeter auf", dist,"m Strecke");
+					//console.log(delta,"Höhenmeter auf", dist,"m Strecke");
+					
+					//Steigung errechnen					
+					var rad = Math.atan(delta/dist);
+					var deg = (rad * (180/Math.PI)).toFixed(1);
+					//console.log(deg);
+					
+					//colorbrewer	Farbpalette; 	
+                     //rot: ['#fee5d9','#fcbba1','#fc9272','#fb6a4a','#de2d26','#a50f15']; 
+					 //gruen: ['#ffffcc','#d9f0a3','#addd8e','#78c679','#31a354','#006837'];
+					 
+					//switch-statement
+					var farbe;
+					switch(true) { // checks if condition is true, not for certain values of a variable
+						case (deg >= 20) :  farbe = "#bd0026"; break;
+						case (deg >= 15) :  farbe = "#f03b20"; break;
+						case (deg >= 10) :  farbe = "#fd8d3c"; break;
+						case (deg >= 5) :  farbe = "#feb24c"; break;
+						case (deg >= 1) :  farbe = "#fed976"; break;
+						case (deg >= -1) :  farbe = "yellow"; break;
+						case (deg >= -5) :  farbe = "#d9f0a3"; break;
+						case (deg >=-10) :  farbe = "#addd8e"; break;
+						case (deg >=-15) :  farbe = "#78c679"; break;
+						case (deg >= -20) :  farbe = "#31a354"; break;
+						case (deg < -20) :  farbe = "#006837"; break;
+					}
+					//console.log(deg, farbe);
+					
+					//Linie zeichnen
+					var pointA = new L.LatLng(pts[i][1], pts[i][0]);
+					var pointB = new L.LatLng(pts[i-1][1], pts[i-1][0]);
+					var pointList = [pointA, pointB];
+			   
+					var firstpolyline = new L.Polyline(pointList, {
+					 color: farbe,
+					 weight: 6,
+					 opacity: 1.0,
+					 smoothFactor: 1
+
+					});
+				
+					firstpolyline.addTo(map);
 				}
             });
         });
-
-        // WMTS-Layer Auswahl hinzufügen
-        var layerControl = L.control.layers({
-            "basemap.at - STANDARD": layers.geolandbasemap,
-            "basemap.at - GRAU": layers.bmapgrau,
-            "basemap.at - OVERLAY": layers.bmapoverlay,
-            "basemap.at - HIGH-DPI": layers.bmaphidpi,
-            "basemap.at - ORTHOFOTO": layers.bmaporthofoto30cm,
-            "OpenStreetMap": layers.osm,
-        },{
-            "Adlerweg Etappe 11" : gpxTrack
-        }).addTo(map);
+		
+		
 		
 		var huts = [
                  L.marker([47.42724, 11.42161], {title: "Karwendelhaus", icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/huette.png' }) }), //Karwendelhaus 47.42724, 11.42161;; 
@@ -178,23 +247,48 @@
 			}
 		});
 		
-		var track = [
+		var track1 = [
 		         L.marker([47.42728, 11.42170], {title: "Startpunkt der Etappe", icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/start.png' }) }),
 				 L.marker([47.35469, 11.47710], {title: "Endpunkt der Etappe", icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/end.png' }) })
 		];
-		var trackLayer = L.featureGroup();
-		for (var i=0; i<track.length; i++) {
-		     trackLayer.addLayer(track[i]);
+		var track1Layer = L.featureGroup();
+		for (var i=0; i<track1.length; i++) {
+		     track1Layer.addLayer(track1[i]);
 		}
 		//startLayer.addTo(map);
 		map.on("zoomend", function () {
 		       if (map.getZoom () >= 12) {
-			         map.addLayer(trackLayer);
+			         map.addLayer(track1Layer);
 			   }
 			   else {
-			        map.removeLayer(trackLayer);
+			        map.removeLayer(track1Layer);
 				}
 		});	
+		} // end function loadTrack
+		
+		        // WMTS-Layer Auswahl hinzufügen
+        var layerControl = L.control.layers({
+            "basemap.at - STANDARD": layers.geolandbasemap,
+            "basemap.at - GRAU": layers.bmapgrau,
+            "basemap.at - OVERLAY": layers.bmapoverlay,
+            "basemap.at - HIGH-DPI": layers.bmaphidpi,
+            "basemap.at - ORTHOFOTO": layers.bmaporthofoto30cm,
+            "OpenStreetMap": layers.osm,
+        },{
+            //"Adlerweg Etappe 11" : gpxTrack
+        }).addTo(map);
+		
+		//zwischen den einzelnen Etappen hin und her schalten
+		var etappenSelektor = document.getElementById("etappen");
+		//console.log("Selector", etappenSelektor);
+		etappenSelektor.onchange = function(evt) {
+		  console.log("Change event: ", evt);
+		  console.log("GPX Track laden: ", etappenSelektor[etappenSelektor.selectedIndex].value);
+		  loadTrack(etappenSelektor[etappenSelektor.selectedIndex].value);
+		}
+		loadTrack("AdlerwegEtappe11.gpx");
+		
+		
     </script>
 	
 <h3><a href="https://github.com/Raffikossmann/raffikossmann.github.io">Autor: Raffael Kossmann</a></h3>
