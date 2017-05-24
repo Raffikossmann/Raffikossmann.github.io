@@ -27,6 +27,11 @@
 			background-color: black;
 			text-align: center;
 		}
+		div {
+		      display: block;
+              margin-left: auto;
+              margin-right: auto
+		}
         html, body, {
             height: 100vh;
             width: 100vw;
@@ -136,7 +141,7 @@
         }).addTo(map);
 		
 		var huts = [
-L.marker([47.42724, 11.42161], {title: "Karwendelhaus", icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/huette.png' }) }), //Karwendelhaus 47.42724, 11.42161;; 
+                 L.marker([47.42724, 11.42161], {title: "Karwendelhaus", icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/huette.png' }) }), //Karwendelhaus 47.42724, 11.42161;; 
 				 L.marker([47.36953, 11.43490], {title: "Kastenalm ",icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/huette.png' }) }), //Kastenalm  47.36953, 11.43490
 				 L.marker([47.35477, 11.47718], {title: "Hallerangerhaus",icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/huette.png' }) }), //Hallerangerhaus 47.35477, 11.47718
 				 L.marker([47.35647, 11.47980], {title: "Hallerangeralm",icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/huette.png' }) })  //Hallerangeralm 47.35647, 11.47980
@@ -153,41 +158,27 @@ L.marker([47.42724, 11.42161], {title: "Karwendelhaus", icon: L.icon ({iconAncho
 				map.removeLayer(hutsLayer); 
 			}
 		});
-		var start = [
-		         L.marker([47.42728, 11.42170], {title: "Startpunkt der Etappe", icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/start.png' }) })
+		
+		var track = [
+		         L.marker([47.42728, 11.42170], {title: "Startpunkt der Etappe", icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/start.png' }) }),
+				 L.marker([47.35469, 11.47710], {title: "Endpunkt der Etappe", icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/end.png' }) })
 		];
-		var startLayer = L.featureGroup();
-		for (var i=0; i<start.length; i++) {
-		     startLayer.addLayer(start[i]);
+		var trackLayer = L.featureGroup();
+		for (var i=0; i<track.length; i++) {
+		     trackLayer.addLayer(track[i]);
 		}
 		//startLayer.addTo(map);
 		map.on("zoomend", function () {
-		       if (map.getZoom () >= 10) {
-			         map.addLayer(startLayer);
+		       if (map.getZoom () >= 12) {
+			         map.addLayer(trackLayer);
 			   }
 			   else {
-			        map.removeLayer(startLayer);
+			        map.removeLayer(trackLayer);
 				}
 		});	
-		var end = [
-		         L.marker([47.35469, 11.47710], {title: "Endpunkt der Etappe", icon: L.icon ({iconAnchor: [12, 30], iconUrl: 'icons/end.png' }) })
-		];
-		var endLayer = L.featureGroup();
-		for (var i=0; i<end.length; i++) {
-		     endLayer.addLayer(end[i]);
-		}
-		//endLayer.addTo(map);
-		map.on("zoomend", function () {
-		       if (map.getZoom () >= 10) {
-			         map.addLayer(endLayer);
-			   }
-			   else {
-			        map.removeLayer(endLayer);
-				}
-		});
     </script>
 	
-<p><a href="https://github.com/Raffikossmann/raffikossmann.github.io">Autor: Raffael Kossmann</a></p>
+<h3><a href="https://github.com/Raffikossmann/raffikossmann.github.io">Autor: Raffael Kossmann</a></h3>
 
 </body>
 
