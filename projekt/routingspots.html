@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title>Extremsport in Innsbruck: Überblick</title>
+
+    <link rel="stylesheet" href="js/leaflet/leaflet.css" />
+    <script src="js/leaflet/leaflet.js"></script>
+		
+    <script src="./mapNAV.js"></script>
+    <script src="js/skatespots_punkte.json.js"></script>
+    <script src="js/surfspots_punkte.json.js"></script>
+    <script src="js/snowspots_punkte.json.js"></script>
+	<script src="js/mountainbike_linien.json.js"></script>
+	
+	<script src="js/leaflet-markercluster/leaflet.markercluster.js"></script>
+	<link rel="stylesheet" href="js/leaflet-markercluster/MarkerCluster.css" />
+	<link rel="stylesheet" href="js/leaflet-markercluster/MarkerCluster.Default.css" />
+
+	<link rel="stylesheet" href="js/leaflet-routingmachine/leaflet-routing-machine.css" />
+    <script src="js/leaflet-routingmachine/leaflet-routing-machine.js"></script>
+
+
+    <style>
+        body {
+            padding: 0px;
+            margin: 0px;
+        }
+		
+        html {
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .footer {
+            color: black;
+            background-color: white;
+            text-align: center;
+            bottom: 0px;
+            width: 100%;
+			font-family: arial;
+        }
+
+        #map {
+            float: center;
+            height: 100vh;
+            width: 100vw;
+            border: 2px solid black;
+        }
+		
+		img {
+            height: 30vh;
+            width: 20vw;
+       }
+	   
+	   a {
+			text-decoration: none;
+	   }
+		
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <div class="footer">
+		<br>
+		Zurück zur <a href="https://flocorz.github.io/projekt/index.html">Hauptseite</a>
+		<br></br>
+        Autoren: <a href="https://github.com/FloCorz/FloCorz.github.io">Florian Corzelius</a>, <a href="https://github.com/raffikossmann/raffikossmann.github.io">Raffael Kossmann</a> und <a href="https://github.com/sh4pefile/sh4pefile.github.io">Paul Tiefenbacher</a>
+        <br></br>
+    </div>
+
+</body>
+
+</html>

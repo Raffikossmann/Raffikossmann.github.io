@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title>Bike Trail Tirol</title>
+
+    <link rel="stylesheet" href="js/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="js/leaflet-elevation/leaflet.elevation-0.0.4.css" />
+
+    <script src="js/leaflet/leaflet.js"></script>
+    <script src="js/leaflet-omnivore/leaflet-omnivore.js"></script>
+    <script src="js/leaflet-elevation/leaflet.elevation-0.0.4.min.js"></script>
+    <script src="js/d3js/d3.v3.min.js"></script>
+    <script src="./etappeninfo.js"></script>
+    <script src="./map.js"></script>
+
+    <style>
+        body {
+            padding: 0.5em;
+            margin-left: 0.5em;
+            margin-right: 0.5em;
+            background: url(images/mountainbikebild.jpg);
+            background-position: top;
+        }
+
+        html,
+        body {
+            height: 60vh;
+            width: 97vw;
+        }
+
+        #map {
+            height: 60vh;
+            width: 97vw;
+        }
+
+        #Titel,
+        #Schwierigkeitsgrad {
+            height: 3vh;
+            width: 97vw;
+        }
+
+        select {
+            font-size: 1.2em;
+            margin: 0.2em;
+        }
+
+        #BiketrailSeiteTitel {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            height: 100px;
+            width: 1024px;
+        }
+
+        h3 {
+            font-family: Arial;
+            text-align: center;
+            background: url(images/TextBackground.png);
+            padding: 1em;
+            border-radius: 1em;
+        }
+
+        p {
+            font-size: 18px;
+            text-align: justify;
+            font-family: arial;
+            background: url(images/TextBackground.png);
+            padding: 1em;
+            border-radius: 1em;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .footer {
+            color: black;
+            background: url(images/TextBackground.png);
+            text-align: center;
+            padding: 1em;
+            font-family: arial;
+            color: black;
+            border-radius: 1em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <figure>
+
+        <img id="BiketrailSeiteTitel" src="images/MountainbiketrailTirolTitel.png" />
+
+    </figure>
+
+    <h3> Der „Bike Trail Tirol“ ist der längste zusammenhängende Mountainbike-Rundkurs der Alpen und führt auf 32 Etappen, 1.000 Kilometern und 27.000 Höhenmetern durch die vielfältigen Regionen des Landes.</h3>
+    <p> Der Aufbau des Rundkurses erlaubt dabei die freie Wahl von Start- und Zielpunkt. Ob ein- oder mehrtägige Rundtouren: Am „Bike Trail Tirol“ wartet auf jeden die passende Tour. Genussradler finden ihre Balance zwischen Entspannung und Anstrengung auf flacheren, landschaftlich reizvollen Strecken. Und wer die sportliche Herausforderung sucht, ist auf den Mountainbike-Touren in Tirol gut aufgehoben. Treten Sie in die Pedale und erkunden Sie das Herz der Alpen am längsten zusammenhängenden Mountainbike-Rundkurs der Alpen.</p>
+
+    <div style="text-align: center; color:white; background-color:black;" id="Titel"> </div>
+    <div id="map"></div>
+    <div style="text-align: center; color:white; background-color:black;" id="Schwierigkeitsgrad"></div>
+
+    <select id="etappen">
+	<option value="01 Steeg-Weissenbach.gpx">Biketrail-Etappe 1 </option>
+	<option value="02 Weissenbach-Tannheim.gpx">Biketrail-Etappe 2 </option>
+	<option value="03 Tannheim-Reutte.gpx">Biketrail-Etappe 3 </option>
+	<option value="04 Weissenbach-Reutte.gpx">Biketrail-Etappe 4 </option>
+	<option value="05 Reutte-Ehrwald.gpx">Biketrail-Etappe 5 </option>
+	<option value="06 Ehrwald-Scharnitz.gpx">Biketrail-Etappe 6 </option>
+	<option value="07 Scharnitz-Achensee.gpx">Biketrail-Etappe 7 </option>
+	<option value="08 Achensee-Kaiserhaus.gpx">Biketrail-Etappe 8 </option>
+	<option value="09 Kaiserhaus-Kufstein.gpx">Biketrail-Etappe 9 </option>
+	<option value="10 Kufstein-Koessen.gpx">Biketrail-Etappe 10</option>
+	<option value="11 Koessen-Kitzbuehel.gpx">Biketrail-Etappe 11</option>
+	<option value="12 Variante Pillersee.gpx">Biketrail-Etappe 12</option>
+	<option value="13 Kitzbühel-Westendorf.gpx">Biketrail-Etappe 13</option>
+	<option value="14 Westendorf-Alpbach.gpx">Biketrail-Etappe 14</option>
+	<option value="15 Alpbach-Zell.gpx">Biketrail-Etappe 15</option>
+	<option value="16 Zell-Achensee.gpx">Biketrail-Etappe 16</option>
+	<option value="17 Zell-Mayrhofen.gpx">Biketrail-Etappe 17</option>
+	<option value="18 Mayrhofen-Lanersbach.gpx">Biketrail-Etappe 18</option>
+	<option value="19 Lanersbach-Weerberg.gpx">Biketrail-Etappe 19</option>
+	<option value="20 Weerberg-Windegg.gpx">Biketrail-Etappe 20</option>
+	<option value="21 Windegg-Matrei.gpx">Biketrail-Etappe 21</option>
+	<option value="22 Matrei-Mieders.gpx">Biketrail-Etappe 22</option>
+	<option value="23 Mieders-Mutters.gpx">Biketrail-Etappe 23</option>
+	<option value="24 Mutters-Sellrain.gpx">Biketrail-Etappe 24</option>
+	<option value="25 Sellrain-Oetz.gpx">Biketrail-Etappe 25</option>
+	<option value="26 Oetz-Imst.gpx">Biketrail-Etappe 26</option>
+	<option value="27 Imst-Wenns.gpx">Biketrail-Etappe 27</option>
+	<option value="28 Wenns-Landeck.gpx">Biketrail-Etappe 28</option>
+	<option value="29 Landeck-Ischgl.gpx">Biketrail-Etappe 29</option>
+	<option value="30 Ischgl-St.Anton.gpx">Biketrail-Etappe 30</option>
+	<option value="31 St.Anton-Steeg.gpx">Biketrail-Etappe 31</option>
+	<option value="32 Imst-Ehrwald.gpx">Biketrail-Etappe 32</option>
+	</select>
+
+    <p style="color:black; padding: 1em;"> Von
+        <span id="Ausgangspunkt"></span> nach
+        <span id="Endpunkt"></span>, wobei
+        <span id="Hoehenmeterauf"></span> Höhenmeter bergauf und
+        <span id="Hoehenmeterab"></span> Höhenmeter bergab auf einer Strecke von
+        <span id="Laenge"></span> km überwunden werden. Die durchschnittliche Fahrzeit liegt bei
+        <span id="Fahrzeit"></span> Stunden.
+        <a href="http://www.tirol.at/reisefuehrer/sport/radfahren/biketouren">  &rarr; Weitere Informationen &larr;  </a>
+    </p>
+
+    <br>
+
+
+    <div class="footer">
+
+        <a href="https://flocorz.github.io/projekt/index.html">Zurück zur Hauptseite</a> <br></br>
+
+        Autoren: <a href="https://github.com/FloCorz/FloCorz.github.io">Florian Corzelius</a>, <a href="https://github.com/raffikossmann/raffikossmann.github.io">Raffael Kossmann</a> und <a href="https://github.com/sh4pefile/sh4pefile.github.io">Paul Tiefenbacher</a>
+        <br></br>
+        Quellen: <a href="https://www.tirol.gv.at/">Land Tirol</a> und <a href="http://www.tirol.at/reisefuehrer/sport/mountainbiken/bike-trail-tirol">Tirol Werbung</a>
+    </div>
+
+</body>
+
+</html>

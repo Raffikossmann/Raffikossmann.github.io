@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title>Extremsport in Innsbruck: Überblick</title>
+
+    <link rel="stylesheet" href="js/leaflet/leaflet.css" />
+    <script src="js/leaflet/leaflet.js"></script>
+
+    <script src="./map.js"></script>
+    <script src="js/skatespots_punkte.json.js"></script>
+    <script src="js/surfspots_punkte.json.js"></script>
+    <script src="js/snowspots_punkte.json.js"></script>
+    <script src="js/mountainbike_linien.json.js"></script>
+
+    <script src="js/leaflet-markercluster/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="js/leaflet-markercluster/MarkerCluster.css" />
+    <link rel="stylesheet" href="js/leaflet-markercluster/MarkerCluster.Default.css" />
+
+
+    <style>
+        body {
+            padding: 0px;
+            margin: 0px;
+        }
+
+        nav {
+            padding: 0px;
+            margin: 0px;
+            text-align: center;
+            font-family: arial;
+        }
+
+        figcaption {
+            padding: 0px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            font-family: arial;
+            display: block;
+            width: 1024px;
+        }
+
+        html {
+            height: 100vh;
+            width: 100vw;
+        }
+
+        div {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .footer {
+            color: black;
+            background-color: white;
+            text-align: center;
+            bottom: 0px;
+            width: 100%;
+            font-family: arial;
+        }
+
+        img {
+            height: 30vh;
+            width: 20vw;
+        }
+
+        #SeiteTitel {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            height: 100px;
+            width: 1024px;
+        }
+
+        #KarteTitel {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            height: 100px;
+            width: 1024px;
+        }
+
+        #LegendeImage {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            height: 340px;
+            width: 870px;
+        }
+
+        #figureImage {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            height: 600px;
+            width: 1024px;
+            border: 2px solid black;
+        }
+
+        #map {
+            float: center;
+            height: 600px;
+            width: 1024px;
+            border: 2px solid black;
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <figure>
+
+        <img id="SeiteTitel" src="images/ExtremsportartenSchriftzug.png" />
+
+    </figure>
+
+    <nav id="sportSelector">
+        <input type="button" value="Skateboarding" data-image="skate.jpg" data-title="Skateboarden ist ein Action-Sport, bei welchem man auf einem Skateboard stehend bestimmte Tricks vollführt.   Skateboarden wurde über all die Jahre von vielen verschiedenen Skatern geprägt und beeinflusst. Eine Studie aus dem Jahr 2009 ergab, dass der Skateboard-Markt mit 11.08 Millionen aktiven Skatern einen jährlichen Umsatz von geschätzten 4.8 Milliarden Dollar erzielt. Im Jahr 2016 wurde offiziell bekannt gegeben, dass Skateboarden bei den Olympischen Spielen 2020 in Tokyo als neue Disziplin aufgenommen wird." />
+        <input id="button1" type="button" value="Snowboarding" data-image="snow.jpg" data-title="Snowboarden gilt als Freizeitaktiviät und ist darüberhinaus olympische und paralympische Dizplin. Beim Snowboarden fährt der Sportler auf einem Snowboard einen schneebedeckten Hang herunter. Unter Freestyle-Snowboarden versteht man jede Art von Snowboarden, bei welcher das Vollführen von sogenannnten Tricks im Vordergrund steht. Im Freestyle-Snowboarden verwendet der Fahrer sämtliche natürliche und künstliche Hindernisse wie Rails, Boxen, Jumps, Halfpipes und unzählige andere, um auf diesen Tricks zu performen. " class="current" />
+        <input type="button" value="Riversurfing" data-image="surf.jpg" data-title="Bei dieser Art von Surfen fährt man auf einer stehenden Welle auf einem Fluss, welche dadurch entsteht, dass große Mengen Wasser über einen Stein oder eine Schwelle fließen und dahinter eine Welle entstehen lassen.  Durch die Fließgeschwindigkeit des Gewässers kommt es dem River-Surfer so vor, als ob er schnell über das Wasser gleiten würde, obwohl er sich eigentlich nicht flussaufwärts oder -abwärts bewegt." />
+        <input type="button" value="Mountainbiking" data-image="bike.jpg" data-title="Beim Mountainbiken fährt man mit einem speziellen, gefederten Fahrrad in meist unwegsamen Gelände einen Hang hinab bzw. hinauf. Mountainbikes weisen zwar viele Ähnlichkeiten zu normalen Fahrrädern auf, dennoch sind sie eher darauf ausgerichtet widerstandsfähiger und geeigneter für anspruchsvolles Gelände zu sein.  Mountainbiken kann generell in viele verschiedene Kategorien unterteilt werden: Cross-Country, Trail-Riding, All-Mountain, Downhill, Freeride und Dirt-Jumping. Es bleibt jedoch zu sagen, dass die meisten Arten von Mountainbiken als Unterkategorien von Trail und Cross-Country angesehen werden können." />
+    </nav>
+
+    <figure>
+
+        <img id="figureImage" src="images/skate.jpg" alt="Bild" />
+
+        <br>
+
+        <figcaption id="figureCaption">Skateboarden ist ein Action-Sport, bei welchem man auf einem Skateboard stehend bestimmte Tricks vollführt. Skateboarden wurde über all die Jahre von vielen verschiedenen Skatern geprägt und beeinflusst. Eine Studie aus dem Jahr 2009 ergab, dass der Skateboard-Markt mit 11.08 Millionen aktiven Skatern einen jährlichen Umsatz von geschätzten 4.8 Milliarden Dollar erzielt. Im Jahr 2016 wurde offiziell bekannt gegeben, dass Skateboarden bei den Olympischen Spielen 2020 in Tokyo als neue Disziplin aufgenommen wird.</figcaption>
+    </figure>
+
+
+    <figure>
+
+        <img id="KarteTitel" src="images/ExtremsportdestinationenTitel.png" />
+
+    </figure>
+
+    <div id="map"></div>
+
+    <figure>
+
+        <img id="LegendeImage" src="images/LegendeSpotmap.png" />
+
+    </figure>
+
+    <div class="footer">
+
+        <br> Weiterführende Links: <a href="https://flocorz.github.io/projekt/Biketrailkarte/index.html">Bike Trail Tirol</a>, <a href="https://flocorz.github.io/projekt/routingspots.html">Standortnavigation </a>
+        <br></br>
+        Autoren: <a href="https://github.com/FloCorz/FloCorz.github.io">Florian Corzelius</a>, <a href="https://github.com/raffikossmann/raffikossmann.github.io">Raffael Kossmann</a> und <a href="https://github.com/sh4pefile/sh4pefile.github.io">Paul Tiefenbacher</a>
+        <br></br>
+        Quellen: <a href="https://www.tirol.gv.at/">Land Tirol</a> und <a href="http://www.tirol.at/reisefuehrer/sport/mountainbiken/bike-trail-tirol">Tirol Werbung</a>
+        <br></br>
+
+    </div>
+
+</body>
+
+</html>
