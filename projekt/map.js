@@ -182,7 +182,7 @@
 
         // Ausschnitt auf Punkte der Spotmap setzen
         map.fitBounds(linienMountainbike.getBounds());
-        // map.fitBounds(punkteSpaziergang.getBounds());
+        
 
         // WMTS-Layer Auswahl hinzufügen
         var layerControl = L.control.layers({
